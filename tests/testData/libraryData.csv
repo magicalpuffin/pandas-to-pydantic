@@ -1,0 +1,16 @@
+LibraryID,LibraryName,Location,EstablishedYear,BookCollectionSize,AuthorID,AuthorName,AuthorBirthdate,BookID,Title,Genre,PublishedYear,AvailableCopies
+1,City Central Library,Cityville,1950,50000,1,J.K. Rowling,1965-07-31,1,Harry Potter and the Philosopher's Stone,Fantasy,1997,5
+1,City Central Library,Cityville,1950,50000,1,J.K. Rowling,1965-07-31,2,Harry Potter and the Chamber of Secrets,Fantasy,1998,3
+1,City Central Library,Cityville,1950,50000,5,Mark Twain,1835-11-30,10,The Adventures of Tom Sawyer,Adventure,1876,2
+2,Greenwood Public Library,Greenwood,1975,35000,2,George Orwell,1903-06-25,3,1984,Dystopian Fiction,1949,7
+2,Greenwood Public Library,Greenwood,1975,35000,6,J.R.R. Tolkien,1892-01-03,11,The Hobbit,Fantasy,1937,4
+3,Lakeside Community Library,Lakeside,1990,25000,3,Jane Austen,1775-12-16,5,Pride and Prejudice,Romance,1813,6
+4,Mountain View Library,Mountain View,1982,40000,4,Agatha Christie,1890-09-15,7,Murder on the Orient Express,Mystery,1934,1
+4,Mountain View Library,Mountain View,1982,40000,5,Mark Twain,1835-11-30,9,Adventures of Huckleberry Finn,Adventure,1884,4
+4,Mountain View Library,Mountain View,1982,40000,5,Mark Twain,1835-11-30,10,The Adventures of Tom Sawyer,Adventure,1876,6
+4,Mountain View Library,Mountain View,1982,40000,2,George Orwell,1903-06-25,4,Animal Farm,Political Satire,1945,1
+4,Mountain View Library,Mountain View,1982,40000,6,J.R.R. Tolkien,1892-01-03,12,The Lord of the Rings,Fantasy,1954,4
+5,Sunset District Public Library,Sunset District,1965,30000,6,J.R.R. Tolkien,1892-01-03,11,The Hobbit,Fantasy,1937,6
+5,Sunset District Public Library,Sunset District,1965,30000,6,J.R.R. Tolkien,1892-01-03,12,The Lord of the Rings,Fantasy,1954,3
+5,Sunset District Public Library,Sunset District,1965,30000,1,J.K. Rowling,1965-07-31,2,Harry Potter and the Chamber of Secrets,Fantasy,1998,3
+5,Sunset District Public Library,Sunset District,1965,30000,5,Mark Twain,1835-11-30,9,Adventures of Huckleberry Finn,Adventure,1884,4

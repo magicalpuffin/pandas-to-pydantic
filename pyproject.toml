@@ -35,6 +35,7 @@ Source = "https://github.com/magicalpuffin/pandas-to-pydantic"
 path = "src/pandas_to_pydantic/__about__.py"
 
 [tool.hatch.envs.default]
+path = ".hatch"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",

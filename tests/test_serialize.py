@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 from .testData.libraryTypes import Book, Author, Library
 from .config import LIBRARY_DATA_PATH
-from pandas_to_pydantic.dataframeSerializer import (
+from pandas_to_pydantic import (
     expandAnnotation,
     getBaseFields,
     getListFields,

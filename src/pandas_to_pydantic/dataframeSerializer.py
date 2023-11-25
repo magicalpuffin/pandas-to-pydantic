@@ -5,6 +5,9 @@ import types
 
 
 def expandAnnotation(model: ModelMetaclass):
+    '''
+    Expands a pydantic model into basic built in types
+    '''
     if not model.__base__ == BaseModel:
         raise TypeError(f"{model} is not a BaseModel")
 
@@ -21,6 +24,9 @@ def expandAnnotation(model: ModelMetaclass):
 
 
 def getBaseFields(annotation: dict) -> list[str]:
+    '''
+    Returns fields with basic types
+    '''
     baseFields = []
 
     for k, v in annotation.items():
@@ -31,6 +37,9 @@ def getBaseFields(annotation: dict) -> list[str]:
 
 
 def getListFields(annotation: dict) -> list[str]:
+    '''
+    Returns fields a list type
+    '''
     listFields = []
 
     for k, v in annotation.items():
@@ -41,6 +50,9 @@ def getListFields(annotation: dict) -> list[str]:
 
 
 def serializeDataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
+    '''
+    Converts a dataframe into json structure
+    '''
     newList = []
     baseFields = getBaseFields(annotation)
     listFields = getListFields(annotation)
@@ -73,6 +85,9 @@ def serializeDataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
 def getRootList(
     serializedData: list[dict | ModelMetaclass], model: ModelMetaclass
 ) -> RootModel:
+    '''
+    Converts a json structure into a root model
+    '''
     RootList = RootModel[list[model]]
     rootList = RootList(serializedData)
 
@@ -80,6 +95,9 @@ def getRootList(
 
 
 def dataframeToPydantic(data: pd.DataFrame, model: ModelMetaclass) -> RootModel:
+    '''
+    Converts a dataframe into a root model of a pydantic model
+    '''
     targetAnnotation = expandAnnotation(model)
     serializedData = serializeDataframe(data, targetAnnotation)
     modelList = getRootList(serializedData, model)

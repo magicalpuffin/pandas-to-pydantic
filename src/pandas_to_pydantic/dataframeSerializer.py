@@ -1,6 +1,7 @@
 import pandas as pd
 from pydantic import BaseModel, RootModel
 from pydantic._internal._model_construction import ModelMetaclass
+from typing import Union
 import types
 
 
@@ -83,7 +84,7 @@ def serializeDataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
 
 
 def getRootList(
-    serializedData: list[dict | ModelMetaclass], model: ModelMetaclass
+    serializedData: list[Union[dict, ModelMetaclass]], model: ModelMetaclass
 ) -> RootModel:
     '''
     Converts a json structure into a root model

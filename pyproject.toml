@@ -7,7 +7,7 @@ name = "pandas-to-pydantic"
 dynamic = ["version"]
 description = 'Library for converting pandas dataframes to pydantic models'
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 license = "MIT"
 keywords = []
 authors = [
@@ -24,18 +24,18 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["pandas", "pydantic"]
+dependencies = ["pandas", "pydantic>=2.0.1"]
 
 [project.urls]
 Documentation = "https://github.com/magicalpuffin/pandas-to-pydantic#readme"
 Issues = "https://github.com/magicalpuffin/pandas-to-pydantic/issues"
 Source = "https://github.com/magicalpuffin/pandas-to-pydantic"
 
+
 [tool.hatch.version]
 path = "src/pandas_to_pydantic/__about__.py"
 
 [tool.hatch.envs.default]
-path = ".hatch"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
@@ -53,7 +53,7 @@ cov = [
 ]
 
 [[tool.hatch.envs.all.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+python = ["3.9", "3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.lint]
 detached = true

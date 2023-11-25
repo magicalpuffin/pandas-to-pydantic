@@ -3,4 +3,6 @@ from .dataframeSerializer import (
     getBaseFields,
     getListFields,
     serializeDataframe,
+    getRootList,
+    dataframeToPydantic
 )

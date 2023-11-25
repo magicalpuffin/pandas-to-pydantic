@@ -19,7 +19,7 @@ pip install pandas-to-pydantic
 ```
 
 ## Example
-Using this [example test data](/tests/testData/libraryData.csv)
+Using this [example test data](https://github.com/magicalpuffin/pandas-to-pydantic/blob/main/tests/testData/libraryData.csv)
 
 ```python
 import pandas as pd

@@ -9,7 +9,7 @@ from pandas_to_pydantic import (
 )
 
 from .config import LIBRARY_DATA_PATH
-from .testData.libraryTypes import Author, Book, Library
+from .data.libraryTypes import Author, Book, Library
 
 data = pd.read_csv(LIBRARY_DATA_PATH)
 

@@ -25,7 +25,7 @@ pip install pandas-to-pydantic
 
 This example will show how to convert data from a flat structure (.csv file, pandas dataframe) to a hierarchical structure (json file, pydantic models)
 
-[Example Book Data](https://github.com/magicalpuffin/pandas-to-pydantic/blob/main/tests/testData/bookData.csv)
+[Example Book Data](https://github.com/magicalpuffin/pandas-to-pydantic/blob/main/tests/data/bookData.csv)
 
 |BookID|Title|AuthorName|Genre|PublishedYear|
 |---|---|---|---|---|
@@ -145,7 +145,7 @@ Returns (output shortened)
 ## Advanced Example
 This example uses a larger data set with additional nesting.
 
-[Example Library Data](https://github.com/magicalpuffin/pandas-to-pydantic/blob/main/tests/testData/libraryData.csv)
+[Example Library Data](https://github.com/magicalpuffin/pandas-to-pydantic/blob/main/tests/data/libraryData.csv)
 
 ```python
 import pandas as pd

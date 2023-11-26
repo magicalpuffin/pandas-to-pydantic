@@ -2,9 +2,9 @@ import pandas as pd
 import pytest
 
 from pandas_to_pydantic import (
+    dataframeToPydantic,
     expandAnnotation,
-    getBaseFields,
-    getListFields,
+    getRootList,
     serializeDataframe,
 )
 
@@ -13,7 +13,7 @@ from .data.libraryTypes import Author, Book, Library
 
 data = pd.read_csv(LIBRARY_DATA_PATH)
 
-targetLibrary1 = {
+targetLibrary1_dict = {
     "LibraryID": 1,
     "LibraryName": "City Central Library",
     "Location": "Cityville",
@@ -60,11 +60,11 @@ targetLibrary1 = {
 
 
 class Test_serialzeDataframe:
-    def test_library1(self):
+    def test_library1_dict(self):
         libraryList = serializeDataframe(data, expandAnnotation(Library))
         library1 = libraryList[0]
 
-        assert library1 == targetLibrary1
+        assert library1 == targetLibrary1_dict
 
     def test_parentIdNA(self):
         dataCopy = data.copy()
@@ -79,3 +79,12 @@ class Test_serialzeDataframe:
 
         with pytest.raises(ValueError):
             serializeDataframe(dataCopy, expandAnnotation(Library))
+
+
+class Test_dataframeToPydantic:
+    def test_library1(self):
+        libraryRootList = dataframeToPydantic(data, Library)
+        library1 = libraryRootList.root[0]
+        targetLibrary1 = Library(**targetLibrary1_dict)
+
+        assert library1 == targetLibrary1

@@ -4,8 +4,8 @@
 
 Library for converting pandas dataframes into pydantic models. This allows conversion between popular python formats for flat and structured data. Pydantic model annotations are matched with pandas dataframe columns. Supports models nested in lists. 
 
-[![PyPI - Version](https://img.shields.io/pypi/v/hatch-demo.svg)](https://pypi.org/project/pandas-to-pydantic)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hatch-demo.svg)](https://pypi.org/project/pandas-to-pydantic)
+[![PyPI - Version](https://img.shields.io/pypi/v/pandas-to-pydantic.svg)](https://pypi.org/project/pandas-to-pydantic)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pandas-to-pydantic.svg)](https://pypi.org/project/pandas-to-pydantic)
 
 -----
 
@@ -73,7 +73,7 @@ Returns (output shortened):
 [Book(BookID=1, Title="Harry Potter and the Philosopher's Stone", AuthorName='J.K. Rowling', Genre='Fantasy', PublishedYear=1997), 
 Book(BookID=2, Title='Harry Potter and the Chamber of Secrets', AuthorName='J.K. Rowling', Genre='Fantasy', PublishedYear=1998), 
 Book(BookID=3, Title='1984', AuthorName='George Orwell', Genre='Dystopian Fiction', PublishedYear=1949), 
-...
+...]
 ```
 
 For example:
@@ -98,7 +98,7 @@ Returns (output shortened):
   'AuthorName': 'George Orwell',
   'Genre': 'Dystopian Fiction',
   'PublishedYear': 1949},
-...
+...]
 ```
 
 
@@ -139,7 +139,7 @@ Returns (output shortened)
  {'Genre': 'Dystopian Fiction',
   'AuthorList': [{'AuthorName': 'George Orwell',
     'BookList': [{'BookID': 3, 'Title': '1984', 'PublishedYear': 1949}]}]},
-...
+...]
 ```
 
 ## Advanced Example

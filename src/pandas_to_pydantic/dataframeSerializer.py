@@ -1,8 +1,9 @@
+import types
+from typing import Union
+
 import pandas as pd
 from pydantic import BaseModel, RootModel
 from pydantic._internal._model_construction import ModelMetaclass
-from typing import Union
-import types
 
 
 def expandAnnotation(model: ModelMetaclass):
@@ -25,9 +26,15 @@ def expandAnnotation(model: ModelMetaclass):
 
 
 def getBaseFields(annotation: dict) -> list[str]:
-    '''
-    Returns fields with basic types
-    '''
+    """
+    Fields with basic types
+
+    Args:
+        annotation (dict): dict with key as name of annotation and value as type
+
+    Returns:
+        list[str]: list of key names that are not a list type
+    """
     baseFields = []
 
     for k, v in annotation.items():
@@ -74,18 +81,14 @@ def serializeDataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
 
         if listFields:
             # Only one list field is currently supported
-            baseDict[listFields[0]] = serializeDataframe(
-                sliceData, annotation[listFields[0]][0]
-            )
+            baseDict[listFields[0]] = serializeDataframe(sliceData, annotation[listFields[0]][0])
 
         newList.append(baseDict)
 
     return newList
 
 
-def getRootList(
-    serializedData: list[Union[dict, ModelMetaclass]], model: ModelMetaclass
-) -> RootModel:
+def getRootList(serializedData: list[Union[dict, ModelMetaclass]], model: ModelMetaclass) -> RootModel:
     '''
     Converts a json structure into a root model
     '''

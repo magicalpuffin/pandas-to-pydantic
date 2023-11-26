@@ -1,13 +1,15 @@
 import pandas as pd
 import pytest
-from .testData.libraryTypes import Book, Author, Library
-from .config import LIBRARY_DATA_PATH
+
 from pandas_to_pydantic import (
     expandAnnotation,
     getBaseFields,
     getListFields,
     serializeDataframe,
 )
+
+from .config import LIBRARY_DATA_PATH
+from .testData.libraryTypes import Author, Book, Library
 
 data = pd.read_csv(LIBRARY_DATA_PATH)
 

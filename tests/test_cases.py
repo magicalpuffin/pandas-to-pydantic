@@ -1,5 +1,6 @@
 import pytest
 from pydantic import BaseModel
+
 from pandas_to_pydantic import (
     expandAnnotation,
     getBaseFields,

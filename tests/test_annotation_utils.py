@@ -1,12 +1,7 @@
 import pytest
 from pydantic import BaseModel
 
-from pandas_to_pydantic import (
-    expandAnnotation,
-    getBaseFields,
-    getListFields,
-    serializeDataframe,
-)
+from pandas_to_pydantic import expandAnnotation, getBaseFields, getListFields
 
 
 class GrandChildModel(BaseModel):

@@ -1,19 +1,14 @@
 import pandas as pd
 import pytest
 
-from pandas_to_pydantic import (
-    dataframeToPydantic,
-    expandAnnotation,
-    getRootList,
-    serializeDataframe,
-)
+from pandas_to_pydantic import dataframe_to_pydantic, expand_annotation, serialize_dataframe
 
 from .config import LIBRARY_DATA_PATH
-from .data.libraryTypes import Author, Book, Library
+from .data.libraryTypes import Library
 
 data = pd.read_csv(LIBRARY_DATA_PATH)
 
-targetLibrary1_dict = {
+target_library_dict_1 = {
     "LibraryID": 1,
     "LibraryName": "City Central Library",
     "Location": "Cityville",
@@ -59,32 +54,32 @@ targetLibrary1_dict = {
 }
 
 
-class Test_serialzeDataframe:
+class TestSerialzeDataframe:
     def test_library1_dict(self):
-        libraryList = serializeDataframe(data, expandAnnotation(Library))
-        library1 = libraryList[0]
+        library_list = serialize_dataframe(data, expand_annotation(Library))
+        library1 = library_list[0]
 
-        assert library1 == targetLibrary1_dict
+        assert library1 == target_library_dict_1
 
-    def test_parentIdNA(self):
-        dataCopy = data.copy()
-        dataCopy["LibraryID"] = dataCopy["LibraryID"].replace({1: None})
-
-        with pytest.raises(ValueError):
-            serializeDataframe(dataCopy, expandAnnotation(Library))
-
-    def test_childIdNA(self):
-        dataCopy = data.copy()
-        dataCopy["AuthorID"] = dataCopy["AuthorID"].replace({1: None})
+    def test_parent_id_missing(self):
+        data_copy = data.copy()
+        data_copy["LibraryID"] = data_copy["LibraryID"].replace({1: None})
 
         with pytest.raises(ValueError):
-            serializeDataframe(dataCopy, expandAnnotation(Library))
+            serialize_dataframe(data_copy, expand_annotation(Library))
+
+    def test_child_id_missing(self):
+        data_copy = data.copy()
+        data_copy["AuthorID"] = data_copy["AuthorID"].replace({1: None})
+
+        with pytest.raises(ValueError):
+            serialize_dataframe(data_copy, expand_annotation(Library))
 
 
-class Test_dataframeToPydantic:
+class TestDataframeToPydantic:
     def test_library1(self):
-        libraryRootList = dataframeToPydantic(data, Library)
-        library1 = libraryRootList.root[0]
-        targetLibrary1 = Library(**targetLibrary1_dict)
+        library_root_list = dataframe_to_pydantic(data, Library)
+        library1 = library_root_list.root[0]
+        target_library1 = Library(**target_library_dict_1)
 
-        assert library1 == targetLibrary1
+        assert library1 == target_library1

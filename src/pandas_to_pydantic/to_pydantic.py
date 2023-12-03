@@ -1,14 +1,13 @@
-import types
 from typing import Union
 
 import pandas as pd
-from pydantic import BaseModel, RootModel
+from pydantic import RootModel
 from pydantic._internal._model_construction import ModelMetaclass
 
-from .annotation_utils import expandAnnotation, getBaseFields, getListFields
+from pandas_to_pydantic.annotation_utils import expand_annotation, get_base_fields, get_list_fields
 
 
-def serializeDataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
+def serialize_dataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
     """
     Converts a dataframe into json-like structure using an annotation
 
@@ -22,51 +21,54 @@ def serializeDataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
     Returns:
         list[dict]: data in json-like structure
     """
-    newList = []
-    baseFields = getBaseFields(annotation)
-    listFields = getListFields(annotation)
+    new_list = []
+    base_fields = get_base_fields(annotation)
+    list_fields = get_list_fields(annotation)
     # Assumes first field is id
-    idField = baseFields[0]
+    id_field = base_fields[0]
 
-    if not listFields:
+    if not list_fields:
         # Might be bad design, should ensure unique id
-        return data[baseFields].to_dict(orient="records")
+        return data[base_fields].to_dict(orient="records")
 
-    if data[idField].isna().any():
-        raise ValueError(f"{idField} contains NA")
+    if data[id_field].isna().any():
+        error_message = f"{id_field} contains NA"
+        raise ValueError(error_message)
 
-    for value in data[idField].unique():
-        sliceData = data[data[idField] == value]
+    for value in data[id_field].unique():
+        slice_data = data[data[id_field] == value]
 
-        baseDict = sliceData[baseFields].iloc[0].to_dict()
+        base_dict = slice_data[base_fields].iloc[0].to_dict()
 
-        if listFields:
+        if list_fields:
             # Only one list field is currently supported
-            baseDict[listFields[0]] = serializeDataframe(sliceData, annotation[listFields[0]][0])
+            base_dict[list_fields[0]] = serialize_dataframe(slice_data, annotation[list_fields[0]][0])
 
-        newList.append(baseDict)
+        new_list.append(base_dict)
 
-    return newList
+    return new_list
 
 
-def getRootList(serializedData: list[Union[dict, ModelMetaclass]], model: ModelMetaclass) -> RootModel:
+# TODO
+# Create a unit test for this
+def get_root_list(serialize_data: list[Union[dict, ModelMetaclass]], model: ModelMetaclass) -> RootModel:
     """
     Converts json-like data into a pydantic list RootModel
 
     Args:
-        serializedData (list[Union[dict, ModelMetaclass]]): data in json-like structure or list of pydantic objects
+        serialize_data (list[Union[dict, ModelMetaclass]]): data in json-like structure or list of pydantic objects
         model (ModelMetaclass): pydantic model
 
     Returns:
         RootModel: list of pydantic model set to the input data
     """
-    RootList = RootModel[list[model]]
-    rootList = RootList(serializedData)
+    root_list_model = RootModel[list[model]]
+    root_list = root_list_model(serialize_data)
 
-    return rootList
+    return root_list
 
 
-def dataframeToPydantic(data: pd.DataFrame, model: ModelMetaclass) -> RootModel:
+def dataframe_to_pydantic(data: pd.DataFrame, model: ModelMetaclass) -> RootModel:
     """
     Converts a dataframe to a pydantic model
 
@@ -77,8 +79,8 @@ def dataframeToPydantic(data: pd.DataFrame, model: ModelMetaclass) -> RootModel:
     Returns:
         RootModel: list of pydantic model set to the input data
     """
-    targetAnnotation = expandAnnotation(model)
-    serializedData = serializeDataframe(data, targetAnnotation)
-    modelList = getRootList(serializedData, model)
+    target_annotation = expand_annotation(model)
+    serialize_data = serialize_dataframe(data, target_annotation)
+    model_list = get_root_list(serialize_data, model)
 
-    return modelList
+    return model_list

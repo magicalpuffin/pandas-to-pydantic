@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from pydantic._internal._model_construction import ModelMetaclass
 
 
-def expandAnnotation(model: ModelMetaclass) -> dict:
+def expand_annotation(model: ModelMetaclass) -> dict:
     """
     Expands a pydantic model annotations into basic types. Recursively expands nested models.
 
@@ -18,21 +18,22 @@ def expandAnnotation(model: ModelMetaclass) -> dict:
         dict: key as annotation name, value as type
     """
     if not model.__base__ == BaseModel:
-        raise TypeError(f"{model} is not a BaseModel")
+        error_message = f"{model} is not a BaseModel"
+        raise TypeError(error_message)
 
     annotations = model.__annotations__.copy()
 
-    for key, fieldType in annotations.items():
-        if type(fieldType) == types.GenericAlias:
+    for key, field_type in annotations.items():
+        if isinstance(field_type, types.GenericAlias):
             # Only expanding lists
-            if fieldType.__origin__ == list:
+            if field_type.__origin__ == list:
                 # Using lists to indicate list structure
-                annotations[key] = [expandAnnotation(fieldType.__args__[0])]
+                annotations[key] = [expand_annotation(field_type.__args__[0])]
 
     return annotations
 
 
-def getBaseFields(annotation: dict) -> list[str]:
+def get_base_fields(annotation: dict) -> list[str]:
     """
     Gets fields with basic types
 
@@ -42,16 +43,16 @@ def getBaseFields(annotation: dict) -> list[str]:
     Returns:
         list[str]: key names that are not list type
     """
-    baseFields = []
+    base_fields = []
 
     for k, v in annotation.items():
-        if type(v) != list:
-            baseFields.append(k)
+        if not isinstance(v, list):
+            base_fields.append(k)
 
-    return baseFields
+    return base_fields
 
 
-def getListFields(annotation: dict) -> list[str]:
+def get_list_fields(annotation: dict) -> list[str]:
     """
     Gets fields with list types
 
@@ -61,10 +62,10 @@ def getListFields(annotation: dict) -> list[str]:
     Returns:
         list[str]: key names that are list type
     """
-    listFields = []
+    list_fields = []
 
     for k, v in annotation.items():
-        if type(v) == list:
-            listFields.append(k)
+        if isinstance(v, list):
+            list_fields.append(k)
 
-    return listFields
+    return list_fields

@@ -1,0 +1,11 @@
+BookID,Title,AuthorName,Genre,PublishedYear
+1,Harry Potter and the Philosopher's Stone,J.K. Rowling,Fantasy,1997
+2,Harry Potter and the Chamber of Secrets,J.K. Rowling,Fantasy,1998
+3,1984,George Orwell,Dystopian Fiction,1949
+4,Animal Farm,George Orwell,Political Satire,1945
+5,Pride and Prejudice,Jane Austen,Romance,1813
+7,Murder on the Orient Express,Agatha Christie,Mystery,1934
+9,Adventures of Huckleberry Finn,Mark Twain,Adventure,1884
+10,The Adventures of Tom Sawyer,Mark Twain,Adventure,1876
+11,The Hobbit,J.R.R. Tolkien,Fantasy,1937
+12,The Lord of the Rings,J.R.R. Tolkien,Fantasy,1954

@@ -1,0 +1,236 @@
+[
+    {
+        "LibraryID": 1,
+        "LibraryName": "City Central Library",
+        "Location": "Cityville",
+        "EstablishedYear": 1950,
+        "BookCollectionSize": 50000,
+        "AuthorList": [
+            {
+                "AuthorID": 1,
+                "AuthorName": "J.K. Rowling",
+                "AuthorBirthdate": "1965-07-31",
+                "BookList": [
+                    {
+                        "BookID": 1,
+                        "Title": "Harry Potter and the Philosopher's Stone",
+                        "Genre": "Fantasy",
+                        "PublishedYear": 1997,
+                        "AvailableCopies": 5
+                    },
+                    {
+                        "BookID": 2,
+                        "Title": "Harry Potter and the Chamber of Secrets",
+                        "Genre": "Fantasy",
+                        "PublishedYear": 1998,
+                        "AvailableCopies": 3
+                    }
+                ]
+            },
+            {
+                "AuthorID": 5,
+                "AuthorName": "Mark Twain",
+                "AuthorBirthdate": "1835-11-30",
+                "BookList": [
+                    {
+                        "BookID": 10,
+                        "Title": "The Adventures of Tom Sawyer",
+                        "Genre": "Adventure",
+                        "PublishedYear": 1876,
+                        "AvailableCopies": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "LibraryID": 2,
+        "LibraryName": "Greenwood Public Library",
+        "Location": "Greenwood",
+        "EstablishedYear": 1975,
+        "BookCollectionSize": 35000,
+        "AuthorList": [
+            {
+                "AuthorID": 2,
+                "AuthorName": "George Orwell",
+                "AuthorBirthdate": "1903-06-25",
+                "BookList": [
+                    {
+                        "BookID": 3,
+                        "Title": "1984",
+                        "Genre": "Dystopian Fiction",
+                        "PublishedYear": 1949,
+                        "AvailableCopies": 7
+                    }
+                ]
+            },
+            {
+                "AuthorID": 6,
+                "AuthorName": "J.R.R. Tolkien",
+                "AuthorBirthdate": "1892-01-03",
+                "BookList": [
+                    {
+                        "BookID": 11,
+                        "Title": "The Hobbit",
+                        "Genre": "Fantasy",
+                        "PublishedYear": 1937,
+                        "AvailableCopies": 4
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "LibraryID": 3,
+        "LibraryName": "Lakeside Community Library",
+        "Location": "Lakeside",
+        "EstablishedYear": 1990,
+        "BookCollectionSize": 25000,
+        "AuthorList": [
+            {
+                "AuthorID": 3,
+                "AuthorName": "Jane Austen",
+                "AuthorBirthdate": "1775-12-16",
+                "BookList": [
+                    {
+                        "BookID": 5,
+                        "Title": "Pride and Prejudice",
+                        "Genre": "Romance",
+                        "PublishedYear": 1813,
+                        "AvailableCopies": 6
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "LibraryID": 4,
+        "LibraryName": "Mountain View Library",
+        "Location": "Mountain View",
+        "EstablishedYear": 1982,
+        "BookCollectionSize": 40000,
+        "AuthorList": [
+            {
+                "AuthorID": 4,
+                "AuthorName": "Agatha Christie",
+                "AuthorBirthdate": "1890-09-15",
+                "BookList": [
+                    {
+                        "BookID": 7,
+                        "Title": "Murder on the Orient Express",
+                        "Genre": "Mystery",
+                        "PublishedYear": 1934,
+                        "AvailableCopies": 1
+                    }
+                ]
+            },
+            {
+                "AuthorID": 5,
+                "AuthorName": "Mark Twain",
+                "AuthorBirthdate": "1835-11-30",
+                "BookList": [
+                    {
+                        "BookID": 9,
+                        "Title": "Adventures of Huckleberry Finn",
+                        "Genre": "Adventure",
+                        "PublishedYear": 1884,
+                        "AvailableCopies": 4
+                    },
+                    {
+                        "BookID": 10,
+                        "Title": "The Adventures of Tom Sawyer",
+                        "Genre": "Adventure",
+                        "PublishedYear": 1876,
+                        "AvailableCopies": 6
+                    }
+                ]
+            },
+            {
+                "AuthorID": 2,
+                "AuthorName": "George Orwell",
+                "AuthorBirthdate": "1903-06-25",
+                "BookList": [
+                    {
+                        "BookID": 4,
+                        "Title": "Animal Farm",
+                        "Genre": "Political Satire",
+                        "PublishedYear": 1945,
+                        "AvailableCopies": 1
+                    }
+                ]
+            },
+            {
+                "AuthorID": 6,
+                "AuthorName": "J.R.R. Tolkien",
+                "AuthorBirthdate": "1892-01-03",
+                "BookList": [
+                    {
+                        "BookID": 12,
+                        "Title": "The Lord of the Rings",
+                        "Genre": "Fantasy",
+                        "PublishedYear": 1954,
+                        "AvailableCopies": 4
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "LibraryID": 5,
+        "LibraryName": "Sunset District Public Library",
+        "Location": "Sunset District",
+        "EstablishedYear": 1965,
+        "BookCollectionSize": 30000,
+        "AuthorList": [
+            {
+                "AuthorID": 6,
+                "AuthorName": "J.R.R. Tolkien",
+                "AuthorBirthdate": "1892-01-03",
+                "BookList": [
+                    {
+                        "BookID": 11,
+                        "Title": "The Hobbit",
+                        "Genre": "Fantasy",
+                        "PublishedYear": 1937,
+                        "AvailableCopies": 6
+                    },
+                    {
+                        "BookID": 12,
+                        "Title": "The Lord of the Rings",
+                        "Genre": "Fantasy",
+                        "PublishedYear": 1954,
+                        "AvailableCopies": 3
+                    }
+                ]
+            },
+            {
+                "AuthorID": 1,
+                "AuthorName": "J.K. Rowling",
+                "AuthorBirthdate": "1965-07-31",
+                "BookList": [
+                    {
+                        "BookID": 2,
+                        "Title": "Harry Potter and the Chamber of Secrets",
+                        "Genre": "Fantasy",
+                        "PublishedYear": 1998,
+                        "AvailableCopies": 3
+                    }
+                ]
+            },
+            {
+                "AuthorID": 5,
+                "AuthorName": "Mark Twain",
+                "AuthorBirthdate": "1835-11-30",
+                "BookList": [
+                    {
+                        "BookID": 9,
+                        "Title": "Adventures of Huckleberry Finn",
+                        "Genre": "Adventure",
+                        "PublishedYear": 1884,
+                        "AvailableCopies": 4
+                    }
+                ]
+            }
+        ]
+    }
+]

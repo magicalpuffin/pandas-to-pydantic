@@ -13,7 +13,9 @@ Library for converting pandas dataframes into pydantic models. This allows conve
 
 - [Installation](#installation)
 - [License](/LICENSE)
-- [Example](#example)
+- [Example 1](#example-1)
+- [dataframe_to_pydantic](#dataframe_to_pydantic)
+- [Example 2](#example-2)
 
 ## Installation
 
@@ -21,7 +23,7 @@ Library for converting pandas dataframes into pydantic models. This allows conve
 pip install pandas-to-pydantic
 ```
 
-## Example
+## Example 1
 
 This example will show how to convert data from a flat structure (.csv file, pandas dataframe) to a hierarchical structure (json file, pydantic models)
 
@@ -53,11 +55,11 @@ class Book(BaseModel):
     Genre: str
     PublishedYear: int
 
-# Input data is a pandas dataframe
+# Update this to your your file path
 book_data = pd.read_csv(FILE_PATH)
 
 # Convert pandas dataframe to a pydantic root model
-book_list_root = dataframe_to_pydantic(data, Library)
+book_list_root = dataframe_to_pydantic(book_data, Book)
 ```
 
 `dataframe_to_pydantic` returns a pydantic `RootModel`. Data can be accessed using its attributes and methods. https://docs.pydantic.dev/latest/api/root_model/
@@ -106,7 +108,9 @@ Returns (output shortened):
 ...]
 ```
 
-Nested pydantic models annotated using `list` are processed. This requires another unique field, `AuthorName` and `Genre` in this example.
+## Example 2
+
+Pydantic models can be nested using `list` annotations. This requires another unique field to be available. In this example, it is `AuthorName` and `Genre`.
 
 For example:
 
@@ -148,6 +152,24 @@ Returns (output shortened)
     'BookList': [{'BookID': 3, 'Title': '1984', 'PublishedYear': 1949}]}]},
 ...]
 ```
+
+## dataframe_to_pydantic
+
+### Args
+
+- data (`pandas.DataFrame`)
+  - Dataframe with columns matching fields in the pydantic model
+  - When the pydantic model includes nested models, it is assumed that the first column is unique. See [Example 2](#example-2)
+- model (`pydantic._internal._model_construction.ModelMetaClass`)
+  - Accepts classes created with pydantic.BaseModel
+  - Supports nested models in lists
+  - Annotation names must match columns in the dataframe
+
+## Returns
+
+- model_list (`pydantic.RootModel`)
+  - Pydantic root model created as a list of the input model
+  - https://docs.pydantic.dev/latest/api/root_model/
 
 ## Advanced Example
 

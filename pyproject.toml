@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires      = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
@@ -19,6 +19,7 @@ classifiers = [
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
@@ -26,8 +27,8 @@ dependencies = ["pandas>=2.0.0", "pydantic>=2.0.1"]
 
 [project.urls]
 Documentation = "https://github.com/magicalpuffin/pandas-to-pydantic#readme"
-Issues = "https://github.com/magicalpuffin/pandas-to-pydantic/issues"
-Source = "https://github.com/magicalpuffin/pandas-to-pydantic"
+Issues        = "https://github.com/magicalpuffin/pandas-to-pydantic/issues"
+Source        = "https://github.com/magicalpuffin/pandas-to-pydantic"
 
 
 [tool.hatch.version]
@@ -77,8 +78,8 @@ all = [
 ]
 
 [tool.black]
-target-version = ["py37"]
-line-length = 120
+target-version            = ["py37"]
+line-length               = 120
 skip-string-normalization = true
 
 [tool.ruff]
@@ -117,9 +118,15 @@ ignore = [
   # Allow boolean positional values in function calls, like `dict.get(... True)`
   "FBT003",
   # Ignore checks for possible passwords
-  "S105", "S106", "S107",
+  "S105",
+  "S106",
+  "S107",
   # Ignore complexity
-  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+  "C901",
+  "PLR0911",
+  "PLR0912",
+  "PLR0913",
+  "PLR0915",
 ]
 unfixable = [
   # Don't touch unused imports
@@ -145,7 +152,10 @@ omit = [
 ]
 
 [tool.coverage.paths]
-pandas_to_pydantic = ["src/pandas_to_pydantic", "*/pandas-to-pydantic/src/pandas_to_pydantic"]
+pandas_to_pydantic = [
+  "src/pandas_to_pydantic",
+  "*/pandas-to-pydantic/src/pandas_to_pydantic",
+]
 tests = ["tests", "*/pandas-to-pydantic/tests"]
 
 [tool.coverage.report]

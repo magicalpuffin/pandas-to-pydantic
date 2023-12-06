@@ -49,8 +49,6 @@ def serialize_dataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
     return new_list
 
 
-# TODO
-# Create a unit test for this
 def get_root_list(serialize_data: list[Union[dict, ModelMetaclass]], model: ModelMetaclass) -> RootModel:
     """
     Converts json-like data into a pydantic list RootModel

@@ -33,6 +33,8 @@ def expand_annotation(model: ModelMetaclass) -> dict:
     return annotations
 
 
+# TODO
+# Combine functionality with list field
 def get_base_fields(annotation: dict) -> list[str]:
     """
     Gets fields with basic types

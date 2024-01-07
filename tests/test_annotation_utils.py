@@ -1,67 +1,31 @@
 import pytest
-from pydantic import BaseModel
 
 from pandas_to_pydantic import expand_annotation, get_base_fields, get_list_fields
 
+from .data.parent_child_types import (
+    BaseModelErrorModel,
+    ChildModel,
+    EmptyModel,
+    GrandchildModel,
+    ParentModel,
+    child_model_annoation,
+    empty_model_annotation,
+    grandchild_model_annotation,
+    parent_model_annotation,
+)
 
-class GrandChildModel(BaseModel):
-    grand_child_string: str
-    grand_child_integer: int
-
-
-class ChildModel(BaseModel):
-    child_string: str
-    child_integer: int
-    child_list_grand_child: list[GrandChildModel]
-
-
-class ParentModel(BaseModel):
-    parent_string: str
-    parent_integer: int
-    parent_float: float
-    parent_list_child: list[ChildModel]
-
-
-class EmptyModel(BaseModel):
-    pass
-
-
-class BaseModelErrorModel(BaseModel):
-    error_list: list[str]
+model_annotation_dict = [
+    (GrandchildModel, grandchild_model_annotation),
+    (ChildModel, child_model_annoation),
+    (ParentModel, parent_model_annotation),
+    (EmptyModel, empty_model_annotation),
+]
 
 
 class TestExpandAnnotation:
-    def test_expand_grandchild(self):
-        expanded = expand_annotation(GrandChildModel)
-        target = {
-            "grand_child_string": str,
-            "grand_child_integer": int,
-        }
-        assert expanded == target
-
-    def test_expand_child(self):
-        expanded = expand_annotation(ChildModel)
-        target = {
-            "child_string": str,
-            "child_integer": int,
-            "child_list_grand_child": [expand_annotation(GrandChildModel)],
-        }
-        assert expanded == target
-
-    def test_expand_parent(self):
-        expanded = expand_annotation(ParentModel)
-        target = {
-            "parent_string": str,
-            "parent_integer": int,
-            "parent_float": float,
-            "parent_list_child": [expand_annotation(ChildModel)],
-        }
-        assert expanded == target
-
-    def test_expand_empty(self):
-        expanded = expand_annotation(EmptyModel)
-        target = {}
-        assert expanded == target
+    @pytest.mark.parametrize("input_model,output_annotation", model_annotation_dict)
+    def test_expand_annotation(self, input_model, output_annotation):
+        assert expand_annotation(input_model) == output_annotation
 
     def test_base_model_exception(self):
         with pytest.raises(TypeError):

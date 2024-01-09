@@ -1,6 +1,6 @@
 import pytest
 
-from pandas_to_pydantic import expand_annotation, get_base_fields, get_list_fields
+from pandas_to_pydantic import expand_annotation, split_annotation_fields
 
 from .data.parent_child_types import (
     BaseModelErrorModel,
@@ -32,15 +32,8 @@ class TestExpandAnnotation:
             expand_annotation(BaseModelErrorModel)
 
 
-class TestGetBaseFields:
-    def test_parent_base_fields(self):
-        base_fields = get_base_fields(expand_annotation(ParentModel))
-        target = ["parent_string", "parent_integer", "parent_float"]
+class TestSplitAnnotationFields:
+    def test_split_annotation_fields(self):
+        base_fields = split_annotation_fields(expand_annotation(ParentModel))
+        target = {"base": ["parent_string", "parent_integer", "parent_float"], "list": ["parent_list_child"]}
         assert base_fields == target
-
-
-class TestGetListFields:
-    def test_parent_list_fields(self):
-        list_fields = get_list_fields(expand_annotation(ParentModel))
-        target = ["parent_list_child"]
-        assert list_fields == target

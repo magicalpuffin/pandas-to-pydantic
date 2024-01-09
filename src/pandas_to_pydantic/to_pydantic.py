@@ -4,7 +4,7 @@ import pandas as pd
 from pydantic import RootModel
 from pydantic._internal._model_construction import ModelMetaclass
 
-from pandas_to_pydantic.annotation_utils import expand_annotation, get_base_fields, get_list_fields
+from pandas_to_pydantic.annotation_utils import expand_annotation, split_annotation_fields
 
 
 def serialize_dataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
@@ -22,14 +22,13 @@ def serialize_dataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
         list[dict]: data in json-like structure
     """
     new_list = []
-    base_fields = get_base_fields(annotation)
-    list_fields = get_list_fields(annotation)
+    fields = split_annotation_fields(annotation)
     # Assumes first field is id
-    id_field = base_fields[0]
+    id_field = fields["base"][0]
 
-    if not list_fields:
+    if not fields["list"]:
         # Might be bad design, should ensure unique id
-        return data[base_fields].to_dict(orient="records")
+        return data[fields["base"]].to_dict(orient="records")
 
     if data[id_field].isna().any():
         error_message = f"{id_field} contains NA"
@@ -38,11 +37,11 @@ def serialize_dataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
     for value in data[id_field].unique():
         slice_data = data[data[id_field] == value]
 
-        base_dict = slice_data[base_fields].iloc[0].to_dict()
+        base_dict = slice_data[fields["base"]].iloc[0].to_dict()
 
-        if list_fields:
+        if fields["list"]:
             # Only one list field is currently supported
-            base_dict[list_fields[0]] = serialize_dataframe(slice_data, annotation[list_fields[0]][0])
+            base_dict[fields["list"][0]] = serialize_dataframe(slice_data, annotation[fields["list"][0]][0])
 
         new_list.append(base_dict)
 

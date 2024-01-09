@@ -33,41 +33,14 @@ def expand_annotation(model: ModelMetaclass) -> dict:
     return annotations
 
 
-# TODO
-# Combine functionality with list field
-def get_base_fields(annotation: dict) -> list[str]:
-    """
-    Gets fields with basic types
-
-    Args:
-        annotation (dict): key as annotation name, value as type
-
-    Returns:
-        list[str]: key names that are not list type
-    """
+def split_annotation_fields(annotation: dict) -> dict[str, list[str]]:
     base_fields = []
-
-    for k, v in annotation.items():
-        if not isinstance(v, list):
-            base_fields.append(k)
-
-    return base_fields
-
-
-def get_list_fields(annotation: dict) -> list[str]:
-    """
-    Gets fields with list types
-
-    Args:
-        annotation (dict): key as annotation name, value as type
-
-    Returns:
-        list[str]: key names that are list type
-    """
     list_fields = []
 
-    for k, v in annotation.items():
-        if isinstance(v, list):
-            list_fields.append(k)
+    for field_name, field_type in annotation.items():
+        if isinstance(field_type, list):
+            list_fields.append(field_name)
+        else:
+            base_fields.append(field_name)
 
-    return list_fields
+    return {"base": base_fields, "list": list_fields}

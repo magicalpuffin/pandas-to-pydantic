@@ -23,12 +23,16 @@ def expand_annotation(model: ModelMetaclass) -> dict:
 
     annotations = model.__annotations__.copy()
 
-    for key, field_type in annotations.items():
+    for field_name, field_type in annotations.items():
         if isinstance(field_type, types.GenericAlias):
-            # Only expanding lists
+            # Expanding lists
             if field_type.__origin__ == list:
                 # Using lists to indicate list structure
-                annotations[key] = [expand_annotation(field_type.__args__[0])]
+                annotations[field_name] = [expand_annotation(field_type.__args__[0])]
+        elif isinstance(field_type, ModelMetaclass):
+            # Expanding pydantic models
+            if field_type.__base__ == BaseModel:
+                annotations[field_name] = expand_annotation(field_type)
 
     return annotations
 

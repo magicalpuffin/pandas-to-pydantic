@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+# TODO move data to other file
 grandchild_model_annotation = {
     "name": "GrandchildModel",
     "id_column": None,
@@ -14,7 +15,7 @@ child_model_annoation = {
     "base_columns": ["child_string", "child_integer"],
     "list_columns": [
         {
-            "name": "GrandchildModel",
+            "name": "child_list_grand_child",
             "id_column": None,
             "base_columns": ["grand_child_string", "grand_child_integer"],
             "list_columns": [],
@@ -30,12 +31,12 @@ parent_model_annotation = {
     "base_columns": ["parent_string", "parent_integer", "parent_float"],
     "list_columns": [
         {
-            "name": "ChildModel",
+            "name": "parent_list_child",
             "id_column": None,
             "base_columns": ["child_string", "child_integer"],
             "list_columns": [
                 {
-                    "name": "GrandchildModel",
+                    "name": "child_list_grand_child",
                     "id_column": None,
                     "base_columns": ["grand_child_string", "grand_child_integer"],
                     "list_columns": [],

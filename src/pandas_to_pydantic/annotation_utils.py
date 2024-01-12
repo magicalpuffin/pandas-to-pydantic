@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from pydantic._internal._model_construction import ModelMetaclass
 
 
+# TODO consider renaming fields, both are child models
 class ModelColumns(BaseModel):
     name: str
     id_column: str | None
@@ -12,15 +13,19 @@ class ModelColumns(BaseModel):
     child_columns: list["ModelColumns"]
 
 
-def get_model_columns(model: ModelMetaclass, id_column_map: dict[str, str] | None = None) -> ModelColumns:
+def get_model_columns(
+    model: ModelMetaclass, id_column_map: dict[str, str] | None = None, name: str | None = None
+) -> ModelColumns:
     if not model.__base__ == BaseModel:
         error_message = f"{model} is not a BaseModel"
         raise TypeError(error_message)
 
     if id_column_map is None:
         id_column_map = {}
+    if name is None:
+        name = model.__name__
 
-    name = model.__name__
+    # TODO name being different than class name is a bit unintuitive
     id_column = id_column_map.get(name)
     annotations = model.__annotations__
 
@@ -31,7 +36,8 @@ def get_model_columns(model: ModelMetaclass, id_column_map: dict[str, str] | Non
     for field_name, field_type in annotations.items():
         if isinstance(field_type, types.GenericAlias):
             if field_type.__origin__ == list:
-                list_columns.append(get_model_columns(field_type.__args__[0], id_column_map))
+                # TODO reevaluate passed in field name
+                list_columns.append(get_model_columns(field_type.__args__[0], id_column_map, field_name))
         elif isinstance(field_type, ModelMetaclass):
             if field_type.__base__ == BaseModel:
                 child_columns.append(get_model_columns(field_type, id_column_map))
@@ -47,6 +53,7 @@ def get_model_columns(model: ModelMetaclass, id_column_map: dict[str, str] | Non
     )
 
 
+# TODO deprecated?
 def expand_annotation(model: ModelMetaclass) -> dict:
     """
     Expands a pydantic model annotations into basic types. Recursively expands nested models.

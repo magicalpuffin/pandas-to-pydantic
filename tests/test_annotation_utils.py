@@ -22,6 +22,7 @@ model_annotation_dict = [
 ]
 
 
+# TODO test different column maps
 class TestExpandAnnotation:
     @pytest.mark.parametrize("input_model,output_annotation", model_annotation_dict)
     def test_get_model_columnds(self, input_model, output_annotation):

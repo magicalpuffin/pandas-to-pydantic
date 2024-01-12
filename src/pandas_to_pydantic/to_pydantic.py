@@ -4,44 +4,33 @@ import pandas as pd
 from pydantic import RootModel
 from pydantic._internal._model_construction import ModelMetaclass
 
-from pandas_to_pydantic.annotation_utils import get_model_columns, split_annotation_fields
+from pandas_to_pydantic.annotation_utils import ModelColumns, get_model_columns
 
 
-def serialize_dataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
-    """
-    Converts a dataframe into json-like structure using an annotation
-
-    Args:
-        data (pd.DataFrame): data with columns matching annotation
-        annotation (dict): key as annotation name, value as type
-
-    Raises:
-        ValueError: error if column used as id has NA
-
-    Returns:
-        list[dict]: data in json-like structure
-    """
+def serialize_dataframe(data: pd.DataFrame, model_columns: ModelColumns) -> list[dict]:
     new_list = []
-    fields = split_annotation_fields(annotation)
-    # Assumes first field is id
-    id_field = fields["base"][0]
 
-    if not fields["list"]:
-        # Might be bad design, should ensure unique id
-        return data[fields["base"]].to_dict(orient="records")
+    if not model_columns.id_column:
+        # TODO consider returning child models with base columnds
+        return data[model_columns.base_columns].to_dict(orient="records")
 
-    if data[id_field].isna().any():
-        error_message = f"{id_field} contains NA"
+    if data[model_columns.id_column].isna().any():
+        error_message = f"{model_columns.id_column} contains NA"
         raise ValueError(error_message)
 
-    for value in data[id_field].unique():
-        slice_data = data[data[id_field] == value]
+    for value in data[model_columns.id_column].unique():
+        base_dict = {}
 
-        base_dict = slice_data[fields["base"]].iloc[0].to_dict()
+        slice_data = data[data[model_columns.id_column] == value]
 
-        if fields["list"]:
-            # Only one list field is currently supported
-            base_dict[fields["list"][0]] = serialize_dataframe(slice_data, annotation[fields["list"][0]][0])
+        base_dict = {**slice_data[model_columns.base_columns].iloc[0].to_dict()}
+
+        for list_model in model_columns.list_columns:
+            base_dict[list_model.name] = serialize_dataframe(slice_data, list_model)
+
+        for child_model in model_columns.child_columns:
+            # TODO fix zero index to work around returning a list
+            base_dict[child_model.name] = serialize_dataframe(slice_data, child_model)[0]
 
         new_list.append(base_dict)
 
@@ -65,7 +54,9 @@ def get_root_list(serialize_data: list[Union[dict, ModelMetaclass]], model: Mode
     return root_list
 
 
-def dataframe_to_pydantic(data: pd.DataFrame, model: ModelMetaclass) -> RootModel:
+def dataframe_to_pydantic(
+    data: pd.DataFrame, model: ModelMetaclass, id_column_map: dict[str, str] | None = None
+) -> RootModel:
     """
     Converts a dataframe to a pydantic model
 
@@ -76,7 +67,7 @@ def dataframe_to_pydantic(data: pd.DataFrame, model: ModelMetaclass) -> RootMode
     Returns:
         RootModel: list of pydantic model set to the input data
     """
-    target_annotation = get_model_columns(model)
+    target_annotation = get_model_columns(model, id_column_map)
     serialize_data = serialize_dataframe(data, target_annotation)
     model_list = get_root_list(serialize_data, model)
 

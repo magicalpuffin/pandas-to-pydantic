@@ -4,6 +4,49 @@ from pydantic import BaseModel
 from pydantic._internal._model_construction import ModelMetaclass
 
 
+class ModelColumns(BaseModel):
+    name: str
+    id_column: str | None
+    base_columns: list[str]
+    list_columns: list["ModelColumns"]
+    child_columns: list["ModelColumns"]
+
+
+def get_model_columns(model: ModelMetaclass, id_column_map: dict[str, str] | None = None) -> ModelColumns:
+    if not model.__base__ == BaseModel:
+        error_message = f"{model} is not a BaseModel"
+        raise TypeError(error_message)
+
+    if id_column_map is None:
+        id_column_map = {}
+
+    name = model.__name__
+    id_column = id_column_map.get(name)
+    annotations = model.__annotations__
+
+    base_columns = []
+    list_columns = []
+    child_columns = []
+
+    for field_name, field_type in annotations.items():
+        if isinstance(field_type, types.GenericAlias):
+            if field_type.__origin__ == list:
+                list_columns.append(get_model_columns(field_type.__args__[0], id_column_map))
+        elif isinstance(field_type, ModelMetaclass):
+            if field_type.__base__ == BaseModel:
+                child_columns.append(get_model_columns(field_type, id_column_map))
+        else:
+            base_columns.append(field_name)
+
+    return ModelColumns(
+        name=name,
+        id_column=id_column,
+        base_columns=base_columns,
+        list_columns=list_columns,
+        child_columns=child_columns,
+    )
+
+
 def expand_annotation(model: ModelMetaclass) -> dict:
     """
     Expands a pydantic model annotations into basic types. Recursively expands nested models.

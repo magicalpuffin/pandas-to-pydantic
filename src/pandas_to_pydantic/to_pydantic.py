@@ -4,7 +4,7 @@ import pandas as pd
 from pydantic import RootModel
 from pydantic._internal._model_construction import ModelMetaclass
 
-from pandas_to_pydantic.annotation_utils import expand_annotation, split_annotation_fields
+from pandas_to_pydantic.annotation_utils import get_model_columns, split_annotation_fields
 
 
 def serialize_dataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
@@ -76,7 +76,7 @@ def dataframe_to_pydantic(data: pd.DataFrame, model: ModelMetaclass) -> RootMode
     Returns:
         RootModel: list of pydantic model set to the input data
     """
-    target_annotation = expand_annotation(model)
+    target_annotation = get_model_columns(model)
     serialize_data = serialize_dataframe(data, target_annotation)
     model_list = get_root_list(serialize_data, model)
 

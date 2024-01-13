@@ -5,15 +5,24 @@ import pytest
 
 from pandas_to_pydantic import dataframe_to_pydantic, get_model_columns, get_root_list, serialize_dataframe
 
-from .config import LIBRARY_CSV, LIBRARY_JSON
-from .data.libraryTypes import Library
+from .data.library_data.library_types import Library, MultiListDetailLibrary, MultiListLibrary, NestedLibrary
 
-library_df = pd.read_csv(LIBRARY_CSV)
+library_df = pd.read_csv("tests/data/library_data/library_data.csv")
 
-with open(LIBRARY_JSON) as file:
+with open("tests/data/library_data/library_data.json") as file:
     library_dict = json.load(file)
 
+with open("tests/data/library_data/nested_library.json") as file:
+    nested_library_dict = json.load(file)
 
+with open("tests/data/library_data/multilist_library.json") as file:
+    multilist_library_dict = json.load(file)
+
+with open("tests/data/library_data/multilist_detail_library.json") as file:
+    multilist_detail_library_dict = json.load(file)
+
+
+# TODO paramertize this
 class TestSerialzeDataframe:
     def test_library_dict(self):
         library_list = serialize_dataframe(
@@ -21,6 +30,34 @@ class TestSerialzeDataframe:
         )
 
         assert library_list == library_dict
+
+    def test_nested_library_dict(self):
+        nested_library_list = serialize_dataframe(
+            library_df, get_model_columns(NestedLibrary, {"NestedLibrary": "LibraryID", "Book": "BookID"})
+        )
+
+        assert nested_library_list == nested_library_dict
+
+    def test_multilist_library_dict(self):
+        multilist_library_list = serialize_dataframe(
+            library_df,
+            get_model_columns(
+                MultiListLibrary, {"MultiListLibrary": "LibraryID", "BookList": "BookID", "AuthorList": "AuthorID"}
+            ),
+        )
+
+        assert multilist_library_list == multilist_library_dict
+
+    def test_multilist_detail_library_dict(self):
+        multilist_detail_library_list = serialize_dataframe(
+            library_df,
+            get_model_columns(
+                MultiListDetailLibrary,
+                {"MultiListDetailLibrary": "LibraryID", "BookList": "BookID", "AuthorList": "AuthorID"},
+            ),
+        )
+
+        assert multilist_detail_library_list == multilist_detail_library_dict
 
     def test_parent_id_missing(self):
         data_copy = library_df.copy()

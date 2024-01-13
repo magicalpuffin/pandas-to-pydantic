@@ -24,6 +24,7 @@ def serialize_dataframe(data: pd.DataFrame, model_columns: ModelColumns) -> list
 
         slice_data = data[data[model_columns.id_column] == value]
 
+        # Using first row for base data
         base_dict = {**slice_data[model_columns.base_columns].iloc[0].to_dict()}
 
         for list_model in model_columns.list_columns:

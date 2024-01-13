@@ -8,10 +8,11 @@ from pandas_to_pydantic.annotation_utils import ModelColumns, get_model_columns
 
 
 def serialize_dataframe(data: pd.DataFrame, model_columns: ModelColumns) -> list[dict]:
+    # TODO maybe only return list if needed
     new_list = []
 
     if not model_columns.id_column:
-        # TODO consider returning child models with base columnds
+        # TODO consider returning child models with base columns
         return data[model_columns.base_columns].to_dict(orient="records")
 
     if data[model_columns.id_column].isna().any():
@@ -29,7 +30,7 @@ def serialize_dataframe(data: pd.DataFrame, model_columns: ModelColumns) -> list
             base_dict[list_model.name] = serialize_dataframe(slice_data, list_model)
 
         for child_model in model_columns.child_columns:
-            # TODO fix zero index to work around returning a list
+            # TODO using zero index to work around returning a list
             base_dict[child_model.name] = serialize_dataframe(slice_data, child_model)[0]
 
         new_list.append(base_dict)

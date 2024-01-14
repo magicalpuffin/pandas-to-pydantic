@@ -1,0 +1,77 @@
+[
+    {
+        "LibraryID": 1,
+        "LibraryName": "City Central Library",
+        "Book": {
+            "BookID": 1,
+            "Title": "Harry Potter and the Philosopher's Stone",
+            "Genre": "Fantasy",
+            "PublishedYear": 1997,
+            "Author": {
+                "AuthorID": 1,
+                "AuthorName": "J.K. Rowling",
+                "AuthorBirthdate": "1965-07-31"
+            }
+        }
+    },
+    {
+        "LibraryID": 2,
+        "LibraryName": "Greenwood Public Library",
+        "Book": {
+            "BookID": 3,
+            "Title": "1984",
+            "Genre": "Dystopian Fiction",
+            "PublishedYear": 1949,
+            "Author": {
+                "AuthorID": 2,
+                "AuthorName": "George Orwell",
+                "AuthorBirthdate": "1903-06-25"
+            }
+        }
+    },
+    {
+        "LibraryID": 3,
+        "LibraryName": "Lakeside Community Library",
+        "Book": {
+            "BookID": 5,
+            "Title": "Pride and Prejudice",
+            "Genre": "Romance",
+            "PublishedYear": 1813,
+            "Author": {
+                "AuthorID": 3,
+                "AuthorName": "Jane Austen",
+                "AuthorBirthdate": "1775-12-16"
+            }
+        }
+    },
+    {
+        "LibraryID": 4,
+        "LibraryName": "Mountain View Library",
+        "Book": {
+            "BookID": 7,
+            "Title": "Murder on the Orient Express",
+            "Genre": "Mystery",
+            "PublishedYear": 1934,
+            "Author": {
+                "AuthorID": 4,
+                "AuthorName": "Agatha Christie",
+                "AuthorBirthdate": "1890-09-15"
+            }
+        }
+    },
+    {
+        "LibraryID": 5,
+        "LibraryName": "Sunset District Public Library",
+        "Book": {
+            "BookID": 11,
+            "Title": "The Hobbit",
+            "Genre": "Fantasy",
+            "PublishedYear": 1937,
+            "Author": {
+                "AuthorID": 6,
+                "AuthorName": "J.R.R. Tolkien",
+                "AuthorBirthdate": "1892-01-03"
+            }
+        }
+    }
+]

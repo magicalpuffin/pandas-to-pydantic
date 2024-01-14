@@ -1,9 +1,81 @@
 import types
+from typing import Optional
 
 from pydantic import BaseModel
 from pydantic._internal._model_construction import ModelMetaclass
 
 
+class ModelColumns(BaseModel):
+    """
+    Describes model fields. Used when mapping Dataframe columns to fields.
+
+    Args:
+        BaseModel (_type_): Pydantic BaseModel
+    """
+
+    name: str
+    id_column: Optional[str]
+    base_columns: list[str]
+    list_columns: list["ModelColumns"]
+    child_columns: list["ModelColumns"]
+
+
+def get_model_columns(
+    model: ModelMetaclass, id_column_map: Optional[dict[str, str]] = None, name: Optional[str] = None
+) -> ModelColumns:
+    """
+    Creates ModelColumns for a Pydantic BaseModel
+
+    Args:
+        model (ModelMetaclass): Pydantic BaseModel class
+        id_column_map (Optional[dict[str, str]], optional): Map of field names and unique ID. Necessary for identifying
+        and structuring nested objects. Defaults to None.
+        name (Optional[str], optional): For name field in ModelColumns. If None, uses model.__name__. Defaults to None.
+
+    Raises:
+        TypeError: Error if model is not a Pydantic BaseModel
+
+    Returns:
+        ModelColumns: ModelColumns generated for the model.
+    """
+    # TODO consider returning field name
+    if not model.__base__ == BaseModel:
+        error_message = f"{model} is not a BaseModel"
+        raise TypeError(error_message)
+
+    if id_column_map is None:
+        id_column_map = {}
+    if name is None:
+        name = model.__name__
+
+    id_column = id_column_map.get(name)
+    annotations = model.__annotations__
+
+    base_columns = []
+    list_columns = []
+    child_columns = []
+
+    for field_name, field_type in annotations.items():
+        if isinstance(field_type, types.GenericAlias):
+            if field_type.__origin__ == list:
+                # TODO reevaluate passed in field name
+                list_columns.append(get_model_columns(field_type.__args__[0], id_column_map, field_name))
+        elif isinstance(field_type, ModelMetaclass):
+            if field_type.__base__ == BaseModel:
+                child_columns.append(get_model_columns(field_type, id_column_map, field_name))
+        else:
+            base_columns.append(field_name)
+
+    return ModelColumns(
+        name=name,
+        id_column=id_column,
+        base_columns=base_columns,
+        list_columns=list_columns,
+        child_columns=child_columns,
+    )
+
+
+# TODO deprecated?
 def expand_annotation(model: ModelMetaclass) -> dict:
     """
     Expands a pydantic model annotations into basic types. Recursively expands nested models.
@@ -23,51 +95,15 @@ def expand_annotation(model: ModelMetaclass) -> dict:
 
     annotations = model.__annotations__.copy()
 
-    for key, field_type in annotations.items():
+    for field_name, field_type in annotations.items():
         if isinstance(field_type, types.GenericAlias):
-            # Only expanding lists
+            # Expanding lists
             if field_type.__origin__ == list:
                 # Using lists to indicate list structure
-                annotations[key] = [expand_annotation(field_type.__args__[0])]
+                annotations[field_name] = [expand_annotation(field_type.__args__[0])]
+        elif isinstance(field_type, ModelMetaclass):
+            # Expanding pydantic models
+            if field_type.__base__ == BaseModel:
+                annotations[field_name] = expand_annotation(field_type)
 
     return annotations
-
-
-# TODO
-# Combine functionality with list field
-def get_base_fields(annotation: dict) -> list[str]:
-    """
-    Gets fields with basic types
-
-    Args:
-        annotation (dict): key as annotation name, value as type
-
-    Returns:
-        list[str]: key names that are not list type
-    """
-    base_fields = []
-
-    for k, v in annotation.items():
-        if not isinstance(v, list):
-            base_fields.append(k)
-
-    return base_fields
-
-
-def get_list_fields(annotation: dict) -> list[str]:
-    """
-    Gets fields with list types
-
-    Args:
-        annotation (dict): key as annotation name, value as type
-
-    Returns:
-        list[str]: key names that are list type
-    """
-    list_fields = []
-
-    for k, v in annotation.items():
-        if isinstance(v, list):
-            list_fields.append(k)
-
-    return list_fields

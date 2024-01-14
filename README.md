@@ -2,7 +2,7 @@
 
 **WARNING: Library is currently unstable and in beta.**
 
-Library for converting pandas dataframes into pydantic models. This allows conversion between popular python formats for flat and structured data. Pydantic model annotations are matched with pandas dataframe columns. Supports models nested in lists.
+This library provides functions for converting Pandas Dataframes to Pydantic Models. This allows you to easily transform data in a table-like format into a json-like format. Pydantic Model annotations are matched with Pandas Dataframe columns. Supports models nested in lists.
 
 [![PyPI - Version](https://img.shields.io/pypi/v/pandas-to-pydantic.svg)](https://pypi.org/project/pandas-to-pydantic)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pandas-to-pydantic.svg)](https://pypi.org/project/pandas-to-pydantic)
@@ -110,7 +110,9 @@ Returns (output shortened):
 
 ## Example 2
 
-Pydantic models can be nested using `list` annotations. This requires another unique field to be available. In this example, it is `AuthorName` and `Genre`.
+In this example, Pydantic models are nested using the `list` type annotation. A unique id field must be provided for each parent model to determine how child models are structured. In this example, the unique id column for the `Genre` model is `Genre`, and the unique id column for the `Author` model is `AuthorName`.
+
+Note: Keys are the field name not model name, except for the parent level model.
 
 For example:
 
@@ -128,7 +130,11 @@ class Genre(BaseModel):
     Genre: str
     AuthorList: list[Author]
 
-dataframe_to_pydantic(book_data, Genre).model_dump()
+dataframe_to_pydantic(
+    data=bookData,
+    model=Genre,
+    id_column_map={"Genre": "Genre", "AuthorList": "AuthorName"},
+).model_dump()
 ```
 
 Returns (output shortened)
@@ -164,6 +170,10 @@ Returns (output shortened)
   - Accepts classes created with pydantic.BaseModel
   - Supports nested models in lists
   - Annotation names must match columns in the dataframe
+- id_column_map(`dict[str,str]`)
+	- Required when nesting Pydantic models
+	- Each key value pair corresponds with field names and their associated unique id column for the nested Pydantic model
+	- For the parent level model, use the model name as key
 
 ## Returns
 
@@ -175,7 +185,7 @@ Returns (output shortened)
 
 This example uses a larger data set with additional nesting.
 
-[Example Library Data](https://github.com/magicalpuffin/pandas-to-pydantic/blob/main/tests/data/libraryData.csv)
+[Example Library Data](https://github.com/magicalpuffin/pandas-to-pydantic/blob/main/tests/data/library_data/library_data.csv)
 
 ```python
 import pandas as pd
@@ -183,34 +193,42 @@ from pydantic import BaseModel
 from pandas_to_pydantic import dataframe_to_pydantic
 
 # Declare pydantic models
-class Book(BaseModel):
-    BookID: int
-    Title: str
-    Genre: str
-    PublishedYear: int
-    AvailableCopies: int
-
+class LibaryDetail(BaseModel):
+    LibraryName: str
+    Location: str
+    EstablishedYear: int
+    BookCollectionSize: int
 
 class Author(BaseModel):
     AuthorID: int
     AuthorName: str
     AuthorBirthdate: str
-    BookList: list[Book]
 
+class Book(BaseModel):
+    BookID: int
+    Title: str
+    Genre: str
+    PublishedYear: int
 
 class Library(BaseModel):
     LibraryID: int
-    LibraryName: str
-    Location: str
-    EstablishedYear: int
-    BookCollectionSize: int
+    Detail: LibaryDetail
     AuthorList: list[Author]
+    BookList: list[Book]
 
 # Input data is a pandas dataframe
 data = pd.read_csv(FILE_PATH)
 
 # Convert pandas dataframe to a pydantic root model
-library_list_root = dataframe_to_pydantic(data, Library)
+library_list_root = dataframe_to_pydantic(
+    data,
+    Library,
+    {
+        "Library": "LibraryID",
+        "BookList": "BookID",
+        "AuthorList": "AuthorID",
+    },
+)
 
 # Access data as a list of pydantic models
 library_list_root.root

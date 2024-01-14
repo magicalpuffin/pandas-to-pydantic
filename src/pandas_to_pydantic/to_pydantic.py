@@ -1,48 +1,51 @@
-from typing import Union
+from typing import Optional, Union
 
 import pandas as pd
 from pydantic import RootModel
 from pydantic._internal._model_construction import ModelMetaclass
 
-from pandas_to_pydantic.annotation_utils import expand_annotation, get_base_fields, get_list_fields
+from pandas_to_pydantic.annotation_utils import ModelColumns, get_model_columns
 
 
-def serialize_dataframe(data: pd.DataFrame, annotation: dict) -> list[dict]:
+def serialize_dataframe(data: pd.DataFrame, model_columns: ModelColumns) -> list[dict]:
     """
-    Converts a dataframe into json-like structure using an annotation
+    Converts a Pandas Dataframe into a json-like structure
 
     Args:
-        data (pd.DataFrame): data with columns matching annotation
-        annotation (dict): key as annotation name, value as type
+        data (pd.DataFrame): Dataframe with columns matching ModelColumns
+        model_columns (ModelColumns): ModelColumns object for maping model fields with columns
 
     Raises:
-        ValueError: error if column used as id has NA
+        ValueError: Error for invalid data or ModelColumns
 
     Returns:
-        list[dict]: data in json-like structure
+        list[dict]: Data in json-like structure
     """
+    # TODO maybe only return list if needed
     new_list = []
-    base_fields = get_base_fields(annotation)
-    list_fields = get_list_fields(annotation)
-    # Assumes first field is id
-    id_field = base_fields[0]
 
-    if not list_fields:
-        # Might be bad design, should ensure unique id
-        return data[base_fields].to_dict(orient="records")
+    if not model_columns.id_column:
+        # TODO consider returning child models with base columns
+        return data[model_columns.base_columns].to_dict(orient="records")
 
-    if data[id_field].isna().any():
-        error_message = f"{id_field} contains NA"
+    if data[model_columns.id_column].isna().any():
+        error_message = f"{model_columns.id_column} contains NA"
         raise ValueError(error_message)
 
-    for value in data[id_field].unique():
-        slice_data = data[data[id_field] == value]
+    for value in data[model_columns.id_column].unique():
+        base_dict = {}
 
-        base_dict = slice_data[base_fields].iloc[0].to_dict()
+        slice_data = data[data[model_columns.id_column] == value]
 
-        if list_fields:
-            # Only one list field is currently supported
-            base_dict[list_fields[0]] = serialize_dataframe(slice_data, annotation[list_fields[0]][0])
+        # Using first row for base data
+        base_dict = {**slice_data[model_columns.base_columns].iloc[0].to_dict()}
+
+        for list_model in model_columns.list_columns:
+            base_dict[list_model.name] = serialize_dataframe(slice_data, list_model)
+
+        for child_model in model_columns.child_columns:
+            # TODO using zero index to work around returning a list
+            base_dict[child_model.name] = serialize_dataframe(slice_data, child_model)[0]
 
         new_list.append(base_dict)
 
@@ -66,19 +69,23 @@ def get_root_list(serialize_data: list[Union[dict, ModelMetaclass]], model: Mode
     return root_list
 
 
-def dataframe_to_pydantic(data: pd.DataFrame, model: ModelMetaclass) -> RootModel:
+def dataframe_to_pydantic(
+    data: pd.DataFrame, model: ModelMetaclass, id_column_map: Optional[dict[str, str]] = None
+) -> RootModel:
     """
     Converts a dataframe to a pydantic model
 
     Args:
-        data (pd.DataFrame): input dataframe. Columns must match model
-        model (ModelMetaclass): target pydantic model
+        data (pd.DataFrame): Dataframe with columns matching Pydantic Model
+        model (ModelMetaclass): Target Pydantic Model
+        id_column_map (Optional[dict[str, str]], optional): Map of field names and unique ID. Necessary for identifying
+        and structuring nested objects.
 
     Returns:
-        RootModel: list of pydantic model set to the input data
+        RootModel: _description_
     """
-    target_annotation = expand_annotation(model)
-    serialize_data = serialize_dataframe(data, target_annotation)
+    target_model_columns = get_model_columns(model, id_column_map)
+    serialize_data = serialize_dataframe(data, target_model_columns)
     model_list = get_root_list(serialize_data, model)
 
     return model_list

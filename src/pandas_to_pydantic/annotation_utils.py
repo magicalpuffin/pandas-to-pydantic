@@ -1,20 +1,43 @@
 import types
+from typing import Optional
 
 from pydantic import BaseModel
 from pydantic._internal._model_construction import ModelMetaclass
 
 
 class ModelColumns(BaseModel):
+    """
+    Describes model fields. Used when mapping Dataframe columns to fields.
+
+    Args:
+        BaseModel (_type_): Pydantic BaseModel
+    """
+
     name: str
-    id_column: str | None
+    id_column: Optional[str]
     base_columns: list[str]
     list_columns: list["ModelColumns"]
     child_columns: list["ModelColumns"]
 
 
 def get_model_columns(
-    model: ModelMetaclass, id_column_map: dict[str, str] | None = None, name: str | None = None
+    model: ModelMetaclass, id_column_map: Optional[dict[str, str]] = None, name: Optional[str] = None
 ) -> ModelColumns:
+    """
+    Creates ModelColumns for a Pydantic BaseModel
+
+    Args:
+        model (ModelMetaclass): Pydantic BaseModel class
+        id_column_map (Optional[dict[str, str]], optional): Map of field names and unique ID. Necessary for identifying
+        and structuring nested objects. Defaults to None.
+        name (Optional[str], optional): For name field in ModelColumns. If None, uses model.__name__. Defaults to None.
+
+    Raises:
+        TypeError: Error if model is not a Pydantic BaseModel
+
+    Returns:
+        ModelColumns: ModelColumns generated for the model.
+    """
     # TODO consider returning field name
     if not model.__base__ == BaseModel:
         error_message = f"{model} is not a BaseModel"

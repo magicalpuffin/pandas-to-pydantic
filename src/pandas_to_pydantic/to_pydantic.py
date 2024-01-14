@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 
 import pandas as pd
 from pydantic import RootModel
@@ -8,6 +8,19 @@ from pandas_to_pydantic.annotation_utils import ModelColumns, get_model_columns
 
 
 def serialize_dataframe(data: pd.DataFrame, model_columns: ModelColumns) -> list[dict]:
+    """
+    Converts a Pandas Dataframe into a json-like structure
+
+    Args:
+        data (pd.DataFrame): Dataframe with columns matching ModelColumns
+        model_columns (ModelColumns): ModelColumns object for maping model fields with columns
+
+    Raises:
+        ValueError: Error for invalid data or ModelColumns
+
+    Returns:
+        list[dict]: Data in json-like structure
+    """
     # TODO maybe only return list if needed
     new_list = []
 
@@ -57,20 +70,22 @@ def get_root_list(serialize_data: list[Union[dict, ModelMetaclass]], model: Mode
 
 
 def dataframe_to_pydantic(
-    data: pd.DataFrame, model: ModelMetaclass, id_column_map: dict[str, str] | None = None
+    data: pd.DataFrame, model: ModelMetaclass, id_column_map: Optional[dict[str, str]] = None
 ) -> RootModel:
     """
     Converts a dataframe to a pydantic model
 
     Args:
-        data (pd.DataFrame): input dataframe. Columns must match model
-        model (ModelMetaclass): target pydantic model
+        data (pd.DataFrame): Dataframe with columns matching Pydantic Model
+        model (ModelMetaclass): Target Pydantic Model
+        id_column_map (Optional[dict[str, str]], optional): Map of field names and unique ID. Necessary for identifying
+        and structuring nested objects.
 
     Returns:
-        RootModel: list of pydantic model set to the input data
+        RootModel: _description_
     """
-    target_annotation = get_model_columns(model, id_column_map)
-    serialize_data = serialize_dataframe(data, target_annotation)
+    target_model_columns = get_model_columns(model, id_column_map)
+    serialize_data = serialize_dataframe(data, target_model_columns)
     model_list = get_root_list(serialize_data, model)
 
     return model_list

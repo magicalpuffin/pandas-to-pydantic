@@ -110,9 +110,9 @@ Returns (output shortened):
 
 ## Example 2
 
-In this example, Pydantic models are nested using the `list` type annotation. A unique id field must be provided for each parent model to determine how child models are structured. In this example, the unique id column for the `Genre` model is `Genre`, and the unique id column for the `Author` model is `AuthorName`.
+In this example, Pydantic models are nested using the `list` type annotation. When there are multiple layers of nesting, unique id fields should be provided for each list field with a child model using `id_column_map`. 
 
-Note: Keys are the field name not model name, except for the parent level model.
+Here, the unique id column for the `Genre` model is `Genre`, and the unique id column for the `Author` model is `AuthorName`. Keys in `id_column_map` can be the model name or field name. Values in `id_column_map` are the unique column name.
 
 For example:
 
@@ -172,7 +172,8 @@ Returns (output shortened)
   - Annotation names must match columns in the dataframe
 - id_column_map(`dict[str,str]`)
 	- Required when nesting Pydantic models
-	- Each key value pair corresponds with field names and their associated unique id column for the nested Pydantic model
+	- Each key corresponds with field name or model name
+	- Each value corresponds with the unique id column for the nested Pydantic model
 	- For the parent level model, use the model name as key
 
 ## Returns

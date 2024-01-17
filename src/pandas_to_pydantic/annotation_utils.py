@@ -48,7 +48,11 @@ def get_model_columns(
     if name is None:
         name = model.__name__
 
+    # Fallback to model name if passed in name field not in column map
     id_column = id_column_map.get(name)
+    if id_column is None:
+        id_column = id_column_map.get(model.__name__)
+
     annotations = model.__annotations__
 
     base_columns = []

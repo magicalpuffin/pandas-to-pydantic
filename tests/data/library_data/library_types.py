@@ -25,6 +25,18 @@ class Library(BaseModel):
     AuthorList: list[Author]
 
 
+class BaseLibrary(BaseModel):
+    LibraryID: int
+    LibraryName: str
+
+
+class InheritedLibrary(BaseLibrary):
+    Location: str
+    EstablishedYear: int
+    BookCollectionSize: int
+    AuthorList: list[Author]
+
+
 class NestedAuthor(BaseModel):
     AuthorID: int
     AuthorName: str

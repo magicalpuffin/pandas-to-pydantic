@@ -20,6 +20,23 @@ class ModelColumns(BaseModel):
     child_columns: list["ModelColumns"]
 
 
+def get_annotations(model: ModelMetaclass) -> dict:
+    """
+    Gets annotations of model, including inherited BaseModel
+
+    Args:
+        model (ModelMetaclass): Pydantic BaseModel class
+
+    Returns:
+        dict: key as annotation name, value as type
+    """
+    annotations = {}
+    for base_model in model.mro():
+        if issubclass(base_model, BaseModel) and base_model != BaseModel:
+            annotations.update(base_model.__annotations__.copy())
+    return annotations
+
+
 def get_model_columns(
     model: ModelMetaclass, id_column_map: Optional[dict[str, str]] = None, name: Optional[str] = None
 ) -> ModelColumns:
@@ -39,7 +56,7 @@ def get_model_columns(
         ModelColumns: ModelColumns generated for the model.
     """
     # TODO consider returning field name
-    if not model.__base__ == BaseModel:
+    if not issubclass(model, BaseModel):
         error_message = f"{model} is not a BaseModel"
         raise TypeError(error_message)
 
@@ -53,7 +70,7 @@ def get_model_columns(
     if id_column is None:
         id_column = id_column_map.get(model.__name__)
 
-    annotations = model.__annotations__
+    annotations = get_annotations(model)
 
     base_columns = []
     list_columns = []
@@ -65,7 +82,7 @@ def get_model_columns(
                 # TODO reevaluate passed in field name
                 list_columns.append(get_model_columns(field_type.__args__[0], id_column_map, field_name))
         elif isinstance(field_type, ModelMetaclass):
-            if field_type.__base__ == BaseModel:
+            if issubclass(field_type, BaseModel):
                 child_columns.append(get_model_columns(field_type, id_column_map, field_name))
         else:
             base_columns.append(field_name)
@@ -93,7 +110,7 @@ def expand_annotation(model: ModelMetaclass) -> dict:
     Returns:
         dict: key as annotation name, value as type
     """
-    if not model.__base__ == BaseModel:
+    if not issubclass(model, BaseModel):
         error_message = f"{model} is not a BaseModel"
         raise TypeError(error_message)
 

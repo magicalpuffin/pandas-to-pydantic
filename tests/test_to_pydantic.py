@@ -6,7 +6,13 @@ import pytest
 from pandas_to_pydantic import dataframe_to_pydantic, get_model_columns, get_root_list, serialize_dataframe
 
 from .config import LIBRARY_CSV, LIBRARY_DATA_DIR, LIBRARY_JSON
-from .data.library_data.library_types import Library, MultiListDetailLibrary, MultiListLibrary, NestedLibrary
+from .data.library_data.library_types import (
+    InheritedLibrary,
+    Library,
+    MultiListDetailLibrary,
+    MultiListLibrary,
+    NestedLibrary,
+)
 
 library_df = pd.read_csv(LIBRARY_CSV)
 
@@ -16,6 +22,7 @@ with open(LIBRARY_JSON) as file:
 # TODO consider parameterizing even further, parameterize data source
 json_model_columns_data = [
     ("library_data.json", Library, {"Library": "LibraryID", "AuthorList": "AuthorID"}),
+    ("library_data.json", InheritedLibrary, {"InheritedLibrary": "LibraryID", "AuthorList": "AuthorID"}),
     ("nested_library.json", NestedLibrary, {"NestedLibrary": "LibraryID", "Book": "BookID"}),
     (
         "multilist_library.json",

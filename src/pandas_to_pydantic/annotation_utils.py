@@ -39,7 +39,7 @@ def get_model_columns(
         ModelColumns: ModelColumns generated for the model.
     """
     # TODO consider returning field name
-    if not model.__base__ == BaseModel:
+    if not issubclass(model, BaseModel):
         error_message = f"{model} is not a BaseModel"
         raise TypeError(error_message)
 
@@ -65,7 +65,7 @@ def get_model_columns(
                 # TODO reevaluate passed in field name
                 list_columns.append(get_model_columns(field_type.__args__[0], id_column_map, field_name))
         elif isinstance(field_type, ModelMetaclass):
-            if field_type.__base__ == BaseModel:
+            if issubclass(field_type, BaseModel):
                 child_columns.append(get_model_columns(field_type, id_column_map, field_name))
         else:
             base_columns.append(field_name)
@@ -93,7 +93,7 @@ def expand_annotation(model: ModelMetaclass) -> dict:
     Returns:
         dict: key as annotation name, value as type
     """
-    if not model.__base__ == BaseModel:
+    if not issubclass(model, BaseModel):
         error_message = f"{model} is not a BaseModel"
         raise TypeError(error_message)
 

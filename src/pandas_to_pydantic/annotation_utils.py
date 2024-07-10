@@ -20,6 +20,23 @@ class ModelColumns(BaseModel):
     child_columns: list["ModelColumns"]
 
 
+def get_annotations(model: ModelMetaclass) -> dict:
+    """
+    Gets annotations of model, including inherited BaseModel
+
+    Args:
+        model (ModelMetaclass): Pydantic BaseModel class
+
+    Returns:
+        dict: key as annotation name, value as type
+    """
+    annotations = {}
+    for base_model in model.mro():
+        if issubclass(base_model, BaseModel) and base_model != BaseModel:
+            annotations.update(base_model.__annotations__.copy())
+    return annotations
+
+
 def get_model_columns(
     model: ModelMetaclass, id_column_map: Optional[dict[str, str]] = None, name: Optional[str] = None
 ) -> ModelColumns:
@@ -53,7 +70,7 @@ def get_model_columns(
     if id_column is None:
         id_column = id_column_map.get(model.__name__)
 
-    annotations = model.__annotations__
+    annotations = get_annotations(model)
 
     base_columns = []
     list_columns = []

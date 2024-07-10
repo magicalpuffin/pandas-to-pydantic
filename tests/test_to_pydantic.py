@@ -22,7 +22,7 @@ with open(LIBRARY_JSON) as file:
 # TODO consider parameterizing even further, parameterize data source
 json_model_columns_data = [
     ("library_data.json", Library, {"Library": "LibraryID", "AuthorList": "AuthorID"}),
-    ("library_data.json", InheritedLibrary, {"Library": "LibraryID", "AuthorList": "AuthorID"}),
+    ("library_data.json", InheritedLibrary, {"InheritedLibrary": "LibraryID", "AuthorList": "AuthorID"}),
     ("nested_library.json", NestedLibrary, {"NestedLibrary": "LibraryID", "Book": "BookID"}),
     (
         "multilist_library.json",

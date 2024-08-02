@@ -31,51 +31,32 @@ Issues        = "https://github.com/magicalpuffin/pandas-to-pydantic/issues"
 Source        = "https://github.com/magicalpuffin/pandas-to-pydantic"
 
 
+[tool.pyright]
+venvPath = "./.hatch/"
+venv     = "pandas-to-pydantic"
+
 [tool.hatch.version]
 path = "src/pandas_to_pydantic/__about__.py"
 
 [tool.hatch.envs.default]
-dependencies = [
-  "coverage[toml]>=6.5",
-  "pytest",
-]
+dependencies = ["coverage[toml]>=6.5", "pytest", "pandas-stubs"]
 [tool.hatch.envs.default.scripts]
-test = "pytest {args:tests}"
-test-cov = "coverage run -m pytest {args:tests}"
-cov-report = [
-  "- coverage combine",
-  "coverage report",
-]
-cov = [
-  "test-cov",
-  "cov-report",
-]
+test       = "pytest {args:tests}"
+test-cov   = "coverage run -m pytest {args:tests}"
+cov-report = ["- coverage combine", "coverage report"]
+cov        = ["test-cov", "cov-report"]
 
 [[tool.hatch.envs.all.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.lint]
-detached = true
-dependencies = [
-  "black>=23.1.0",
-  "mypy>=1.0.0",
-  "ruff>=0.0.243",
-]
+detached     = true
+dependencies = ["black>=23.1.0", "mypy>=1.0.0", "ruff>=0.0.243"]
 [tool.hatch.envs.lint.scripts]
 typing = "mypy --install-types --non-interactive {args:src/pandas_to_pydantic tests}"
-style = [
-  "ruff {args:.}",
-  "black --check --diff {args:.}",
-]
-fmt = [
-  "black {args:.}",
-  "ruff --fix {args:.}",
-  "style",
-]
-all = [
-  "style",
-  "typing",
-]
+style  = ["ruff {args:.}", "black --check --diff {args:.}"]
+fmt    = ["black {args:.}", "ruff --fix {args:.}", "style"]
+all    = ["style", "typing"]
 
 [tool.black]
 target-version            = ["py37"]
@@ -145,11 +126,9 @@ ban-relative-imports = "all"
 
 [tool.coverage.run]
 source_pkgs = ["pandas_to_pydantic", "tests"]
-branch = true
-parallel = true
-omit = [
-  "src/pandas_to_pydantic/__about__.py",
-]
+branch      = true
+parallel    = true
+omit        = ["src/pandas_to_pydantic/__about__.py"]
 
 [tool.coverage.paths]
 pandas_to_pydantic = [
@@ -159,8 +138,4 @@ pandas_to_pydantic = [
 tests = ["tests", "*/pandas-to-pydantic/tests"]
 
 [tool.coverage.report]
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]

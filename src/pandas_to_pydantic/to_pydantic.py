@@ -52,19 +52,19 @@ def serialize_dataframe(data: pd.DataFrame, model_columns: ModelColumns) -> list
     return new_list
 
 
-def get_root_list(serialize_data: list[Union[dict, ModelMetaclass]], model: ModelMetaclass) -> RootModel:
+def get_root_list(serialize_data: Union[list[dict], list[ModelMetaclass]], model: ModelMetaclass) -> RootModel:
     """
     Converts json-like data into a pydantic list RootModel
 
     Args:
-        serialize_data (list[Union[dict, ModelMetaclass]]): data in json-like structure or list of pydantic objects
+        serialize_data (Union[list[dict], list[ModelMetaclass]]): data in json-like structure or list of pydantic object
         model (ModelMetaclass): pydantic model
 
     Returns:
         RootModel: list of pydantic model set to the input data
     """
     root_list_model = RootModel[list[model]]
-    root_list = root_list_model(serialize_data)
+    root_list = root_list_model(serialize_data)  # type: ignore
 
     return root_list
 

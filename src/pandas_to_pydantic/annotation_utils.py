@@ -32,7 +32,7 @@ def get_annotations(model: ModelMetaclass) -> dict:
     """
     annotations = {}
     for base_model in model.mro():
-        if issubclass(base_model, BaseModel) and base_model != BaseModel:
+        if issubclass(base_model, BaseModel) and base_model is not BaseModel:
             annotations.update(base_model.__annotations__.copy())
     return annotations
 
@@ -78,7 +78,7 @@ def get_model_columns(
 
     for field_name, field_type in annotations.items():
         if isinstance(field_type, types.GenericAlias):
-            if field_type.__origin__ == list:
+            if field_type.__origin__ is list:
                 # TODO reevaluate passed in field name
                 list_columns.append(get_model_columns(field_type.__args__[0], id_column_map, field_name))
         elif isinstance(field_type, ModelMetaclass):
@@ -119,12 +119,12 @@ def expand_annotation(model: ModelMetaclass) -> dict:
     for field_name, field_type in annotations.items():
         if isinstance(field_type, types.GenericAlias):
             # Expanding lists
-            if field_type.__origin__ == list:
+            if field_type.__origin__ is list:
                 # Using lists to indicate list structure
                 annotations[field_name] = [expand_annotation(field_type.__args__[0])]
         elif isinstance(field_type, ModelMetaclass):
             # Expanding pydantic models
-            if field_type.__base__ == BaseModel:
+            if field_type.__base__ is BaseModel:
                 annotations[field_name] = expand_annotation(field_type)
 
     return annotations

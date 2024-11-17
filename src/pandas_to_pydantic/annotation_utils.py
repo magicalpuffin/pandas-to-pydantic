@@ -94,37 +94,3 @@ def get_model_columns(
         list_columns=list_columns,
         child_columns=child_columns,
     )
-
-
-# TODO deprecated?
-def expand_annotation(model: ModelMetaclass) -> dict:
-    """
-    Expands a pydantic model annotations into basic types. Recursively expands nested models.
-
-    Args:
-        model (ModelMetaclass): pydantic model
-
-    Raises:
-        TypeError: error if not pydantic model
-
-    Returns:
-        dict: key as annotation name, value as type
-    """
-    if not issubclass(model, BaseModel):
-        error_message = f"{model} is not a BaseModel"
-        raise TypeError(error_message)
-
-    annotations = model.__annotations__.copy()
-
-    for field_name, field_type in annotations.items():
-        if isinstance(field_type, types.GenericAlias):
-            # Expanding lists
-            if field_type.__origin__ is list:
-                # Using lists to indicate list structure
-                annotations[field_name] = [expand_annotation(field_type.__args__[0])]
-        elif isinstance(field_type, ModelMetaclass):
-            # Expanding pydantic models
-            if field_type.__base__ is BaseModel:
-                annotations[field_name] = expand_annotation(field_type)
-
-    return annotations

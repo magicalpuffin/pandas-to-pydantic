@@ -1,7 +1,7 @@
-from typing import Optional, Union
+from typing import Optional, TypeVar, Union
 
 import pandas as pd
-from pydantic import RootModel
+from pydantic import BaseModel, RootModel
 from pydantic._internal._model_construction import ModelMetaclass
 
 from pandas_to_pydantic.annotation_utils import ModelColumns, get_model_columns
@@ -52,7 +52,10 @@ def serialize_dataframe(data: pd.DataFrame, model_columns: ModelColumns) -> list
     return new_list
 
 
-def get_root_list(serialize_data: Union[list[dict], list[ModelMetaclass]], model: ModelMetaclass) -> RootModel:
+T = TypeVar("T", bound=BaseModel)
+
+
+def get_root_list(serialize_data: Union[list[dict], list[ModelMetaclass]], model: type[T]) -> RootModel[list[T]]:
     """
     Converts json-like data into a pydantic list RootModel
 
@@ -70,8 +73,8 @@ def get_root_list(serialize_data: Union[list[dict], list[ModelMetaclass]], model
 
 
 def dataframe_to_pydantic(
-    data: pd.DataFrame, model: ModelMetaclass, id_column_map: Optional[dict[str, str]] = None
-) -> RootModel:
+    data: pd.DataFrame, model: type[T], id_column_map: Optional[dict[str, str]] = None
+) -> RootModel[list[T]]:
     """
     Converts a dataframe to a pydantic model
 
